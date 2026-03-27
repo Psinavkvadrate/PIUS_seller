@@ -1,0 +1,28 @@
+.background {
+  min-height: 100vh;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  padding: 40px 0;
+
+  box-sizing: border-box;
+}
+
+.container {
+  width: 90%;
+  max-width: 1400px;
+
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+
+  min-height: calc(100vh - 80px);
+}
