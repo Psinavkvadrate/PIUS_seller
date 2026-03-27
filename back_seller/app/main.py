@@ -19,3 +19,7 @@ app.add_middleware(
 app.include_router(market_router)
 app.include_router(product_router)
 app.include_router(orders_router)
+
+
+for route in app.routes:
+    print("ROUTE:", route.path, route.methods)
