@@ -46,6 +46,9 @@ export const Header = ({ userName }: Props) => {
           <Button color="inherit" onClick={() => navigate("/orders")}>
             Заказы
           </Button>
+          <Button color="inherit" onClick={() => navigate("/revenue")}>
+            Выручка
+          </Button>
           <Box display="flex" alignItems="center" gap={1}>
             <ShoppingBasketRounded />
             <span>{userName}</span>

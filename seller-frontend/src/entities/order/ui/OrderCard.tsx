@@ -25,16 +25,25 @@ export const OrderCard = ({ order }) => {
   const [openModal, setOpenModal] = useState(false);
 
   const handleStatusChange = async (newStatus) => {
-    await updateStatus({
-      id: order.id,
-      status: newStatus,
-    });
+    try {
+      await updateStatus({
+        id: order.id,
+        status: newStatus,
+      }).unwrap();
+    } catch (e) {
+      alert(e?.data?.detail || "Ошибка обновления статуса");
+    }
   };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
     if (!confirm("Удалить заказ?")) return;
-    await deleteOrder(order.id);
+
+    try {
+      await deleteOrder(order.id).unwrap();
+    } catch (e) {
+      alert("Ошибка удаления");
+    }
   };
 
   const handleContact = (e) => {

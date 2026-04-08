@@ -9,3 +9,8 @@ alembic upgrade head
 python seed.py
 
 uvicorn app.main:app --reload
+
+
+yarn install
+
+yarn dev

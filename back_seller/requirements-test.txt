@@ -1,0 +1,10 @@
+pytest
+pytest-asyncio
+pytest-cov
+asynctest
+httpx
+fastapi
+sqlalchemy[asyncio]
+asyncpg
+python-jose
+pydantic
