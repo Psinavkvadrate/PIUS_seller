@@ -7,28 +7,38 @@ from app.models.order import OrderStatus
 
 class CustomerOut(BaseModel):
     id: UUID
-    full_name: str
+    fullName: str
     telegram: Optional[str]
 
 
 class OrderOut(BaseModel):
     id: UUID
-    order_number: str
+    orderNumber: str
     customer: CustomerOut
-    delivery_address: Optional[str]
-    total_amount: float
-    items_count: int
+    deliveryAddress: Optional[str]
+    totalAmount: float
+    itemsCount: int
     status: OrderStatus
-    created_at: datetime
+    createdAt: datetime
 
 
 class StatisticsOut(BaseModel):
-    total_orders: int
-    total_revenue: float
-    completed_orders: int
-    processing_orders: int
-    pending_orders: int
+    totalOrders: int
+    totalRevenue: float
+    completedOrders: int
+    processingOrders: int
+    pendingOrders: int
+
+
+class PaginatedOrdersOut(BaseModel):
+    statistics: StatisticsOut
+    orders: List[OrderOut]
+    pagination: dict
 
 
 class OrderStatusUpdate(BaseModel):
     status: OrderStatus
+
+
+class SuccessResponse(BaseModel):
+    success: bool
