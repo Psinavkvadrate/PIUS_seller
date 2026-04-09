@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 from app.models.market import Market
 from app.models.product import Product
-from uuid import UUID
+
 
 async def get_my_products(
         db: AsyncSession,
@@ -21,13 +21,12 @@ async def get_my_products(
     result = await db.execute(
         select(Market).where(Market.userId == user_id)
     )
-
     market = result.scalars().first()
 
     if not market:
         return {
             "items": [],
-            "pagination": {}
+            "pagination": {"total": 0}
         }
 
     query = select(Product).where(Product.marketId == market.marketId)
@@ -44,11 +43,13 @@ async def get_my_products(
     if max_price is not None:
         query = query.where(Product.price <= max_price)
 
-    if available:
-        query = query.where(Product.available > 0)
+    if available is not None:
+        if available:
+            query = query.where(Product.available > 0)
+        else:
+            query = query.where(Product.available == 0)
 
     count_query = select(func.count()).select_from(query.subquery())
-
     total_items = (await db.execute(count_query)).scalar()
 
     offset = (page - 1) * limit
@@ -59,15 +60,10 @@ async def get_my_products(
 
     products = result.scalars().all()
 
-    total_pages = (total_items + limit - 1) // limit
-
     return {
         "items": products,
         "pagination": {
-            "page": page,
-            "limit": limit,
-            "totalItems": total_items,
-            "totalPages": total_pages
+            "total": total_items
         }
     }
 
@@ -77,7 +73,6 @@ async def create_product(db: AsyncSession, user_id, data):
     result = await db.execute(
         select(Market).where(Market.userId == user_id)
     )
-
     market = result.scalars().first()
 
     if not market:
@@ -103,12 +98,10 @@ async def create_product(db: AsyncSession, user_id, data):
 
 async def get_product(db: AsyncSession, product_id, user_id):
 
-    product_id = UUID(str(product_id))
-
+    # ❗ УБРАЛИ UUID(str(...)) — это ломало DELETE
     result = await db.execute(
         select(Market).where(Market.userId == user_id)
     )
-
     market = result.scalars().first()
 
     if not market:
@@ -143,18 +136,17 @@ async def update_product(db: AsyncSession, product_id, user_id, data):
         product.available = data.available
 
     await db.commit()
+    await db.refresh(product)
 
     return product
 
 
 async def delete_product(db: AsyncSession, product_id, user_id):
 
-    product_id = UUID(str(product_id))
-
     product = await get_product(db, product_id, user_id)
 
+    if not product:
+        raise HTTPException(404, "Product not found")
+
     await db.delete(product)
-
     await db.commit()
-
-    return True

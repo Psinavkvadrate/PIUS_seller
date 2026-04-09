@@ -16,7 +16,7 @@ async def get_orders_with_stats(
     query = (
         select(
             Order,
-            func.count(OrderItem.id).label("itemsCount"),
+            func.count(OrderItem.id).label("items_count"),
             User.userId,
             User.firstName,
             User.lastName,
@@ -93,38 +93,34 @@ async def get_orders_with_stats(
     orders = []
 
     for order, items_count, uid, first, last, pat, telegram in rows:
-
         full_name = " ".join(filter(None, [first, last, pat]))
 
         orders.append({
             "id": order.id,
-            "orderNumber": order.orderNumber,
+            "order_number": order.orderNumber,
             "customer": {
                 "id": uid,
-                "fullName": full_name,
+                "full_name": full_name,
                 "telegram": telegram
             },
-            "deliveryAddress": order.deliveryAddress,
-            "totalAmount": float(order.totalAmount),
-            "itemsCount": items_count,
+            "delivery_address": order.deliveryAddress,
+            "total_amount": float(order.totalAmount),
+            "items_count": items_count,
             "status": order.status,
-            "createdAt": order.createdAt
+            "created_at": order.createdAt
         })
 
     return {
-        "statistics": {
-            "totalOrders": total_orders,
-            "totalRevenue": float(total_revenue),
-            "completedOrders": completed_orders,
-            "processingOrders": processing_orders,
-            "pendingOrders": pending_orders
-        },
         "orders": orders,
+        "statistics": {
+            "total_orders": total_orders,
+            "total_revenue": float(total_revenue),
+            "completed_orders": completed_orders,
+            "processing_orders": processing_orders,
+            "pending_orders": pending_orders
+        },
         "pagination": {
-            "page": page,
-            "limit": limit,
-            "totalItems": total_orders,
-            "totalPages": (total_orders + limit - 1) // limit
+            "total": total_orders
         }
     }
 

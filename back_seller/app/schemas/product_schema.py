@@ -4,9 +4,8 @@ from decimal import Decimal
 from typing import Optional
 from app.enums.product_category import ProductCategory
 
-# POST /api/products
-class ProductCreate(BaseModel):
 
+class ProductCreate(BaseModel):
     name: str
     description: str
     category: ProductCategory
@@ -15,21 +14,19 @@ class ProductCreate(BaseModel):
     img: Optional[str]
 
 
-# PATCH /api/products/:id
 class ProductUpdate(BaseModel):
-
     name: Optional[str]
     price: Optional[Decimal]
     available: Optional[int]
 
-class ProductResponse(BaseModel):
 
+class ProductResponse(BaseModel):
     id: UUID
     name: str
     price: Decimal
     category: ProductCategory
     available: int
-    img: str | None
+    img: Optional[str]
 
     class Config:
         from_attributes = True

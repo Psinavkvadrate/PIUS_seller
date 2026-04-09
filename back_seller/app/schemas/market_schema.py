@@ -1,20 +1,20 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
 from uuid import UUID
 from typing import Optional
 
-# Response GET /api/markets/my
-class MarketResponse(BaseModel):
 
-    marketId: UUID
-    marketName: str
+class MarketResponse(BaseModel):
+    market_id: UUID = Field(alias="marketId")
+    market_name: str = Field(alias="marketName")
     description: Optional[str]
-    createdAt: datetime
+    created_at: datetime = Field(alias="createdAt")
 
     class Config:
         from_attributes = True
-# PATCH /api/markets/my
-class MarketUpdate(BaseModel):
+        populate_by_name = True
 
-    marketName: str
-    description: Optional[str]
+
+class MarketUpdate(BaseModel):
+    market_name: Optional[str] = None
+    description: Optional[str] = None
